@@ -14,6 +14,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// App Initializer to check PIN
+// App Initializer (PIN checker)
 class AppInitializer extends StatefulWidget {
   const AppInitializer({super.key});
 
@@ -80,7 +81,6 @@ class _AppInitializerState extends State<AppInitializer> {
     final pinEnabled = await SecurityHelper.isPinEnabled();
 
     if (!pinEnabled) {
-      // PIN not enabled, go directly to home
       setState(() {
         _isVerified = true;
         _isChecking = false;
@@ -88,17 +88,11 @@ class _AppInitializerState extends State<AppInitializer> {
       return;
     }
 
-    // PIN is enabled, show PIN screen
-    setState(() {
-      _isChecking = false;
-    });
+    setState(() => _isChecking = false);
 
-    // Wait a bit for the widget to build
     await Future.delayed(const Duration(milliseconds: 100));
 
-    if (mounted) {
-      _showPinScreen();
-    }
+    if (mounted) _showPinScreen();
   }
 
   Future<void> _showPinScreen() async {
@@ -109,16 +103,12 @@ class _AppInitializerState extends State<AppInitializer> {
       ),
     );
 
+    if (!mounted) return;
+
     if (result == true) {
-      // PIN verified successfully
-      setState(() {
-        _isVerified = true;
-      });
+      setState(() => _isVerified = true);
     } else {
-      // PIN verification failed, show again
-      if (mounted) {
-        _showPinScreen();
-      }
+      _showPinScreen();
     }
   }
 
@@ -128,18 +118,16 @@ class _AppInitializerState extends State<AppInitializer> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    if (_isVerified) {
-      return const HomePage();
-    }
+    if (_isVerified) return const HomePage();
 
-    // Waiting for PIN verification
     return const Scaffold(body: Center(child: Text('Memverifikasi...')));
   }
 }
 
-// Home Page
+// Home Page -------------------------------------------------------------------------------------
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -158,29 +146,31 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _load() async {
     setState(() => loading = true);
+
     courses = await DatabaseHelper.instance.getCourses();
     items = await DatabaseHelper.instance.getAssignments(
       course: selectedCourse == 'All' ? null : selectedCourse,
     );
-    setState(() => loading = false);
+
+    if (mounted) setState(() => loading = false);
   }
 
   Future<void> _toggleDone(Assignment a) async {
     a.isDone = !a.isDone;
     await DatabaseHelper.instance.updateAssignment(a);
-    await _load();
+    if (mounted) await _load();
   }
 
   Future<void> _delete(Assignment a) async {
     if (a.id != null) await DatabaseHelper.instance.deleteAssignment(a.id!);
-    await _load();
+    if (mounted) await _load();
   }
 
   void _openAddEdit([Assignment? a]) async {
-    final changed = await Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => AddEditPage(item: a)));
-    if (changed == true) await _load();
+    final changed = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => AddEditPage(item: a)),
+    );
+    if (changed == true && mounted) await _load();
   }
 
   void _openCourses() {
@@ -201,13 +191,15 @@ class _HomePageState extends State<HomePage> {
     showSearch(
       context: context,
       delegate: AssignmentSearchDelegate(currentCourse: selectedCourse),
-    ).then((_) => _load());
+    ).then((_) {
+      if (mounted) _load();
+    });
   }
 
   void _openSettings() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const SettingsScreen()),
+    );
   }
 
   @override
@@ -290,6 +282,7 @@ class _HomePageState extends State<HomePage> {
                                 final dueText = due != null
                                     ? '${due.year}-${due.month.toString().padLeft(2, '0')}-${due.day.toString().padLeft(2, '0')}'
                                     : a.dueDate;
+
                                 return Card(
                                   margin: const EdgeInsets.symmetric(
                                     horizontal: 12,
@@ -335,7 +328,7 @@ class _HomePageState extends State<HomePage> {
                                                     fontWeight: FontWeight.bold,
                                                     decoration: a.isDone
                                                         ? TextDecoration
-                                                              .lineThrough
+                                                            .lineThrough
                                                         : null,
                                                   ),
                                                 ),
@@ -353,8 +346,7 @@ class _HomePageState extends State<HomePage> {
                                                       a.course,
                                                       style: TextStyle(
                                                         color: Colors
-                                                            .grey
-                                                            .shade600,
+                                                            .grey.shade600,
                                                         fontSize: 12,
                                                       ),
                                                     ),
@@ -374,8 +366,7 @@ class _HomePageState extends State<HomePage> {
                                                       dueText,
                                                       style: TextStyle(
                                                         color: Colors
-                                                            .grey
-                                                            .shade600,
+                                                            .grey.shade600,
                                                         fontSize: 12,
                                                       ),
                                                     ),
@@ -389,7 +380,7 @@ class _HomePageState extends State<HomePage> {
                                               a.isDone
                                                   ? Icons.check_circle
                                                   : Icons
-                                                        .radio_button_unchecked,
+                                                      .radio_button_unchecked,
                                               color: a.isDone
                                                   ? Colors.green
                                                   : Colors.grey,
@@ -403,10 +394,8 @@ class _HomePageState extends State<HomePage> {
                                                 value: 'edit',
                                                 child: Row(
                                                   children: [
-                                                    Icon(
-                                                      Icons.edit,
-                                                      color: Colors.blue,
-                                                    ),
+                                                    Icon(Icons.edit,
+                                                        color: Colors.blue),
                                                     SizedBox(width: 8),
                                                     Text('Edit'),
                                                   ],
@@ -416,20 +405,18 @@ class _HomePageState extends State<HomePage> {
                                                 value: 'delete',
                                                 child: Row(
                                                   children: [
-                                                    Icon(
-                                                      Icons.delete,
-                                                      color: Colors.red,
-                                                    ),
+                                                    Icon(Icons.delete,
+                                                        color: Colors.red),
                                                     SizedBox(width: 8),
                                                     Text('Hapus'),
                                                   ],
                                                 ),
                                               ),
                                             ],
-                                            onSelected: (value) {
-                                              if (value == 'edit') {
+                                            onSelected: (v) {
+                                              if (v == 'edit') {
                                                 _openAddEdit(a);
-                                              } else if (value == 'delete') {
+                                              } else if (v == 'delete') {
                                                 _delete(a);
                                               }
                                             },
@@ -450,10 +437,11 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-// Add / Edit Page
+// Add / Edit Page -------------------------------------------------------------------------------
 class AddEditPage extends StatefulWidget {
   final Assignment? item;
   const AddEditPage({super.key, this.item});
+
   @override
   State<AddEditPage> createState() => _AddEditPageState();
 }
@@ -474,9 +462,8 @@ class _AddEditPageState extends State<AddEditPage> {
     _descC = TextEditingController(text: a?.description ?? '');
     _courseC = TextEditingController(text: a?.course ?? 'Umum');
     _isDone = a?.isDone ?? false;
-    _dueDate = DateTime.tryParse(a?.dueDate ?? '');
-    if (_dueDate == null)
-      _dueDate = DateTime.now().add(const Duration(days: 7));
+    _dueDate = DateTime.tryParse(a?.dueDate ?? '') ??
+        DateTime.now().add(const Duration(days: 7));
   }
 
   @override
@@ -495,11 +482,15 @@ class _AddEditPageState extends State<AddEditPage> {
       firstDate: DateTime(now.year - 2),
       lastDate: DateTime(now.year + 5),
     );
-    if (picked != null) setState(() => _dueDate = picked);
+
+    if (picked != null) {
+      setState(() => _dueDate = picked);
+    }
   }
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
+
     final a = Assignment(
       id: widget.item?.id,
       title: _titleC.text.trim(),
@@ -524,6 +515,7 @@ class _AddEditPageState extends State<AddEditPage> {
     final dueText = _dueDate != null
         ? '${_dueDate!.year}-${_dueDate!.month.toString().padLeft(2, '0')}-${_dueDate!.day.toString().padLeft(2, '0')}'
         : 'Pilih tanggal';
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.item == null ? 'Tambah Tugas' : 'Edit Tugas'),
@@ -586,10 +578,11 @@ class _AddEditPageState extends State<AddEditPage> {
   }
 }
 
-// Courses Page (list of courses / categories)
+// Courses Page -----------------------------------------------------------------------------------
 class CoursesPage extends StatefulWidget {
   final void Function(String) onSelect;
   const CoursesPage({super.key, required this.onSelect});
+
   @override
   State<CoursesPage> createState() => _CoursesPageState();
 }
@@ -606,19 +599,23 @@ class _CoursesPageState extends State<CoursesPage> {
 
   Future<void> _loadCounts() async {
     setState(() => loading = true);
+
     final db = await DatabaseHelper.instance.database;
     final res = await db.rawQuery(
       'SELECT course, COUNT(*) as cnt FROM ${DatabaseHelper.assignmentTable} GROUP BY course',
     );
+
     counts = {
       for (var r in res) (r['course'] as String? ?? 'Umum'): (r['cnt'] as int),
     };
-    setState(() => loading = false);
+
+    if (mounted) setState(() => loading = false);
   }
 
   @override
   Widget build(BuildContext context) {
     final keys = counts.keys.toList()..sort();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Mata Kuliah')),
       body: loading
@@ -645,7 +642,7 @@ class _CoursesPageState extends State<CoursesPage> {
   }
 }
 
-// SearchDelegate for assignments
+// Search Delegate (PERBAIKAN COMPLETE) -----------------------------------------------------------
 class AssignmentSearchDelegate extends SearchDelegate<Assignment?> {
   final String currentCourse;
   AssignmentSearchDelegate({this.currentCourse = 'All'});
@@ -657,7 +654,10 @@ class AssignmentSearchDelegate extends SearchDelegate<Assignment?> {
   List<Widget>? buildActions(BuildContext context) {
     return [
       if (query.isNotEmpty)
-        IconButton(icon: const Icon(Icons.clear), onPressed: () => query = ''),
+        IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () => query = '',
+        ),
     ];
   }
 
@@ -677,19 +677,23 @@ class AssignmentSearchDelegate extends SearchDelegate<Assignment?> {
         course: currentCourse == 'All' ? null : currentCourse,
       ),
       builder: (context, snap) {
-        if (snap.connectionState != ConnectionState.done)
+        if (snap.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator());
+        }
+
         final data = snap.data ?? [];
         if (data.isEmpty) return const Center(child: Text('Tidak ada hasil.'));
+
         return ListView.separated(
           itemCount: data.length,
-          separatorBuilder: (_, __) => const Divider(height: 1),
+          separatorBuilder: (_, _) => const Divider(height: 1),
           itemBuilder: (context, i) {
             final a = data[i];
             final due = DateTime.tryParse(a.dueDate);
             final dueText = due != null
                 ? '${due.year}-${due.month.toString().padLeft(2, '0')}-${due.day.toString().padLeft(2, '0')}'
                 : a.dueDate;
+
             return ListTile(
               leading: Icon(
                 a.isDone ? Icons.check_circle : Icons.radio_button_unchecked,
@@ -701,12 +705,14 @@ class AssignmentSearchDelegate extends SearchDelegate<Assignment?> {
                 ),
               ),
               subtitle: Text('${a.course} • Deadline: $dueText'),
-              onTap: () {
-                Navigator.of(context)
-                    .push(
-                      MaterialPageRoute(builder: (_) => AddEditPage(item: a)),
-                    )
-                    .then((_) => close(context, null));
+              onTap: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => AddEditPage(item: a),
+                  ),
+                );
+
+                if (context.mounted) close(context, null);
               },
             );
           },
@@ -717,18 +723,25 @@ class AssignmentSearchDelegate extends SearchDelegate<Assignment?> {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    if (query.trim().isEmpty)
+    if (query.trim().isEmpty) {
       return const Center(child: Text('Ketik untuk mencari...'));
+    }
+
     return FutureBuilder<List<Assignment>>(
       future: DatabaseHelper.instance.searchAssignments(
         query,
         course: currentCourse == 'All' ? null : currentCourse,
       ),
       builder: (context, snap) {
-        if (snap.connectionState != ConnectionState.done)
+        if (snap.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator());
+        }
+
         final items = snap.data ?? [];
-        if (items.isEmpty) return const Center(child: Text('Tidak ada saran.'));
+        if (items.isEmpty) {
+          return const Center(child: Text('Tidak ada saran.'));
+        }
+
         return ListView.builder(
           itemCount: items.length,
           itemBuilder: (context, idx) {
@@ -739,12 +752,14 @@ class AssignmentSearchDelegate extends SearchDelegate<Assignment?> {
               leading: Icon(
                 a.isDone ? Icons.check_circle : Icons.radio_button_unchecked,
               ),
-              onTap: () {
-                Navigator.of(context)
-                    .push(
-                      MaterialPageRoute(builder: (_) => AddEditPage(item: a)),
-                    )
-                    .then((_) => close(context, null));
+              onTap: () async {
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => AddEditPage(item: a),
+                  ),
+                );
+
+                if (context.mounted) close(context, null);
               },
             );
           },

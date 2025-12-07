@@ -263,7 +263,7 @@ class _SecurityQuestionDialogState extends State<SecurityQuestionDialog> {
               const SizedBox(height: 16),
               if (!useCustomQuestion) ...[
                 DropdownButtonFormField<String>(
-                  value: selectedQuestion,
+                  initialValue: selectedQuestion,
                   decoration: const InputDecoration(
                     labelText: 'Pertanyaan',
                     border: OutlineInputBorder(),

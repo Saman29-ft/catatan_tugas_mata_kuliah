@@ -253,11 +253,11 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
   Widget _buildNumberRow(List<String> numbers) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: numbers.map((num) {
-        if (num.isEmpty) {
+      children: numbers.map((value) {
+        if (value.isEmpty) {
           return const SizedBox(width: 70, height: 70);
         }
-        if (num == 'DEL') {
+        if (value == 'DEL') {
           return InkWell(
             onTap: _removeDigit,
             borderRadius: BorderRadius.circular(35),
@@ -273,7 +273,7 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
           );
         }
         return InkWell(
-          onTap: () => _addDigit(num),
+          onTap: () => _addDigit(value),
           borderRadius: BorderRadius.circular(35),
           child: Container(
             width: 70,
@@ -284,7 +284,7 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
             ),
             child: Center(
               child: Text(
-                num,
+                value,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 28,
