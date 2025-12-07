@@ -147,7 +147,7 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withOpacity(0.2),
+                  color: const Color(0x33FFFFFF),
                 ),
                 child: const Icon(
                   Icons.lock_outline,
@@ -168,7 +168,7 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
               Text(
                 'PIN 6 Angka',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: const Color(0xCCFFFFFF),
                   fontSize: 16,
                 ),
               ),
@@ -186,7 +186,7 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
                       shape: BoxShape.circle,
                       color: index < displayPin.length
                           ? Colors.white
-                          : Colors.white.withOpacity(0.3),
+                          : const Color(0x4DFFFFFF),
                       border: Border.all(color: Colors.white, width: 2),
                     ),
                   ),
@@ -266,7 +266,7 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
               height: 70,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.2),
+                color: const Color(0x33FFFFFF),
               ),
               child: const Icon(Icons.backspace_outlined, color: Colors.white),
             ),
@@ -280,7 +280,7 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
             height: 70,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withOpacity(0.2),
+              color: const Color(0x33FFFFFF),
             ),
             child: Center(
               child: Text(

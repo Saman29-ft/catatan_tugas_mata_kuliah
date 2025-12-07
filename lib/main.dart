@@ -234,7 +234,7 @@ class _HomePageState extends State<HomePage> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [const Color(0xFF1976D2).withOpacity(0.1), Colors.white],
+            colors: [const Color(0x1A1976D2), Colors.white],
           ),
         ),
         child: RefreshIndicator(
