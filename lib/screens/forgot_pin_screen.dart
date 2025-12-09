@@ -1,6 +1,6 @@
 // lib/forgot_pin_screen.dart
 import 'package:flutter/material.dart';
-import 'security_helper.dart';
+import '../utils/security_helper.dart';
 import 'pin_entry_screen.dart';
 
 class ForgotPinScreen extends StatefulWidget {

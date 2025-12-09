@@ -1,6 +1,6 @@
 // lib/pin_entry_screen.dart
 import 'package:flutter/material.dart';
-import 'security_helper.dart';
+import '../utils/security_helper.dart';
 import 'forgot_pin_screen.dart';
 
 class PinEntryScreen extends StatefulWidget {
@@ -145,9 +145,9 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
             children: [
               Container(
                 padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0x33FFFFFF),
+                  color: Color(0x33FFFFFF),
                 ),
                 child: const Icon(
                   Icons.lock_outline,
@@ -165,10 +165,10 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
+              const Text(
                 'PIN 6 Angka',
                 style: TextStyle(
-                  color: const Color(0xCCFFFFFF),
+                  color: Color(0xCCFFFFFF),
                   fontSize: 16,
                 ),
               ),
@@ -264,9 +264,9 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
             child: Container(
               width: 70,
               height: 70,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0x33FFFFFF),
+                color: Color(0x33FFFFFF),
               ),
               child: const Icon(Icons.backspace_outlined, color: Colors.white),
             ),
@@ -278,9 +278,9 @@ class _PinEntryScreenState extends State<PinEntryScreen> {
           child: Container(
             width: 70,
             height: 70,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0x33FFFFFF),
+              color: Color(0x33FFFFFF),
             ),
             child: Center(
               child: Text(

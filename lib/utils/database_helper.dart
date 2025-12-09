@@ -1,7 +1,7 @@
 // lib/database_helper.dart
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'assignment.dart';
+import '../models/assignment.dart';
 
 class DatabaseHelper {
   static const _dbName = 'assignments_db.db';

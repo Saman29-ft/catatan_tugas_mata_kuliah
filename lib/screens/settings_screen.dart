@@ -1,6 +1,6 @@
 // lib/settings_screen.dart
 import 'package:flutter/material.dart';
-import 'security_helper.dart';
+import '../utils/security_helper.dart';
 import 'pin_entry_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
