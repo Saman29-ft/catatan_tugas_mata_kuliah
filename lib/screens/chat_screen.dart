@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/deepseek_service.dart';
+import '../services/generate_ai.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -13,7 +13,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final DeepSeekService _chatService = DeepSeekService();
+  final GenerateAI _chatService = GenerateAI();
   final TextEditingController _controller = TextEditingController();
   final List<Map<String, dynamic>> _messages = [];
   bool _isLoading = false;
@@ -82,7 +82,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       setState(() {
         _messages.add({
-          'text': '**Error:** $e\n\nSilakan:\n1. Periksa API Key di deepseek_service.dart\n2. Cek koneksi internet\n3. Pastikan API Key masih aktif',
+          'text': '**Error:** $e\n\nSilakan:\n1. Periksa API Key di generate.dart\n2. Cek koneksi internet\n3. Pastikan API Key masih aktif',
           'isUser': false,
         });
         _isLoading = false;
@@ -94,7 +94,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DeepSeek AI Assistant'),
+        title: const Text('Chat AI Assistant'),
         backgroundColor: Colors.deepPurple,
         actions: [
           if (_error != null)
